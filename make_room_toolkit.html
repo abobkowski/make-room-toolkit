@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Make Room Toolkit</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #1a1a2e;
+    --ink-mid: #3d3d5c;
+    --ink-soft: #6b6b8a;
+    --cream: #faf8f3;
+    --warm-white: #fffdf9;
+    --gold: #c9943a;
+    --gold-light: #f0d9a8;
+    --gold-pale: #fdf6e8;
+    --gold-dark: #8a5e14;
+    --teal: #1d6b6b;
+    --teal-light: #e0f2f2;
+    --teal-mid: #3a9b9b;
+    --accent: #7a3080;
+    --accent-light: #f3e8f5;
+    --coral: #c0503a;
+    --coral-light: #fdeee8;
+    --slate: #3a4a6b;
+    --slate-light: #eaecf5;
+    --moss: #3b6b40;
+    --moss-light: #e8f5ea;
+    --rule: rgba(26,26,46,0.1);
+    --serif: 'DM Serif Display', Georgia, serif;
+    --sans: 'DM Sans', sans-serif;
+  }
+
+  body {
+    background: var(--cream);
+    font-family: var(--sans);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* ── NAV ── */
+  .nav {
+    background: var(--ink);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    overflow-x: auto;
+  }
+
+  .nav-brand {
+    font-family: var(--serif);
+    font-size: 1.1rem;
+    color: var(--gold-light);
+    padding: 1rem 1.5rem 1rem 0;
+    border-right: 0.5px solid rgba(255,255,255,0.15);
+    margin-right: 1rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .nav-tab {
+    padding: 1rem 1.25rem;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.55);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: color 0.2s, border-color 0.2s;
+    flex-shrink: 0;
+    user-select: none;
+  }
+
+  .nav-tab:hover { color: rgba(255,255,255,0.85); }
+  .nav-tab.active { color: var(--gold-light); border-bottom-color: var(--gold); }
+
+  /* ── SECTIONS ── */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* ── HERO / INTRO ── */
+  .hero {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 4rem 2rem 2rem;
+    text-align: center;
+  }
+
+  .hero-tag {
+    display: inline-block;
+    background: var(--gold-pale);
+    color: var(--gold-dark);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 2px;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero h1 {
+    font-family: var(--serif);
+    font-size: 3rem;
+    line-height: 1.15;
+    color: var(--ink);
+    margin-bottom: 1rem;
+  }
+  .hero h1 em { color: var(--gold-dark); font-style: italic; }
+
+  .hero-desc {
+    font-size: 1rem;
+    color: var(--ink-soft);
+    line-height: 1.75;
+    max-width: 600px;
+    margin: 0 auto 2.5rem;
+  }
+
+  .flow-diagram {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    margin: 2rem 0 3rem;
+    flex-wrap: wrap;
+  }
+
+  .flow-step {
+    background: var(--warm-white);
+    border: 0.5px solid var(--rule);
+    padding: 1rem 1.25rem;
+    text-align: center;
+    min-width: 130px;
+    border-radius: 6px;
+  }
+  .flow-step .fs-icon {
+    font-size: 1.5rem;
+    margin-bottom: 6px;
+    color: var(--teal-mid);
+    font-family: var(--serif);
+  }
+  .flow-step .fs-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+  .flow-step .fs-sub {
+    font-size: 0.7rem;
+    color: var(--ink-soft);
+    margin-top: 3px;
+    line-height: 1.4;
+  }
+
+  .flow-arrow {
+    color: var(--gold);
+    font-size: 1.2rem;
+    padding: 0 0.5rem;
+    font-weight: 300;
+  }
+
+  .intro-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    max-width: 900px;
+    margin: 0 auto 3rem;
+    padding: 0 2rem;
+    text-align: left;
+  }
+
+  .intro-card {
+    background: var(--warm-white);
+    border: 0.5px solid var(--rule);
+    border-radius: 8px;
+    padding: 1.25rem;
+  }
+  .intro-card-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold-dark);
+    margin-bottom: 0.5rem;
+  }
+  .intro-card p {
+    font-size: 0.82rem;
+    color: var(--ink-mid);
+    line-height: 1.6;
+  }
+
+  /* ── TOOL CARDS (shared) ── */
+  .tool-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .tool-header {
+    border-bottom: 0.5px solid var(--rule);
+    padding-bottom: 1.5rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+
+  .tool-num {
+    font-family: var(--serif);
+    font-size: 3rem;
+    color: var(--gold-light);
+    line-height: 1;
+    flex-shrink: 0;
+    min-width: 60px;
+  }
+
+  .tool-header h2 {
+    font-family: var(--serif);
+    font-size: 2rem;
+    color: var(--ink);
+    margin-bottom: 0.5rem;
+  }
+
+  .tool-header p {
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+    line-height: 1.65;
+    max-width: 600px;
+  }
+
+  .tool-accent { color: var(--gold-dark); font-style: italic; }
+
+  /* ── INVITATION SCRIPT ── */
+  .script-block {
+    background: var(--gold-pale);
+    border: 0.5px solid var(--gold-light);
+    border-left: 3px solid var(--gold);
+    border-radius: 0 8px 8px 0;
+    padding: 1.5rem 1.75rem;
+    margin: 1.5rem 0;
+  }
+  .script-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold-dark);
+    margin-bottom: 0.75rem;
+  }
+  .script-block p {
+    font-size: 0.9rem;
+    color: var(--ink);
+    line-height: 1.75;
+    font-style: italic;
+    font-family: var(--serif);
+    margin-bottom: 0.5rem;
+  }
+  .script-block p:last-child { margin-bottom: 0; }
+
+  .script-note {
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+    font-style: normal;
+    font-family: var(--sans);
+    padding-top: 0.75rem;
+    border-top: 0.5px solid var(--gold-light);
+    margin-top: 0.75rem;
+  }
+
+  .principles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-top: 1.5rem;
+  }
+
+  .principle {
+    background: var(--warm-white);
+    border: 0.5px solid var(--rule);
+    border-radius: 8px;
+    padding: 1rem;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .p-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--gold-pale);
+    color: var(--gold-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .p-text strong {
+    display: block;
+    font-size: 0.82rem;
+    color: var(--ink);
+    margin-bottom: 3px;
+  }
+  .p-text span {
+    font-size: 0.75rem;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+
+  /* ── ROLE MENU ── */
+  .role-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin-top: 1.5rem;
+  }
+
+  .role-card {
+    background: var(--warm-white);
+    border: 0.5px solid var(--rule);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .role-header {
+    padding: 0.9rem 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .role-badge {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 3px;
+  }
+  .role-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--ink);
+  }
+
+  .role-body {
+    padding: 0.75rem 1.1rem 1rem;
+    border-top: 0.5px solid var(--rule);
+  }
+  .role-desc {
+    font-size: 0.8rem;
+    color: var(--ink-mid);
+    line-height: 1.6;
+    margin-bottom: 0.75rem;
+  }
+  .role-tasks {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .role-task {
+    font-size: 0.75rem;
+    color: var(--ink-soft);
+    display: flex;
+    align-items: baseline;
+    gap: 7px;
+    line-height: 1.4;
+  }
+  .role-task::before { content: '—'; color: var(--gold); flex-shrink: 0; }
+
+  /* ── SLIDE WORKFLOW ── */
+  .workflow-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 1.5rem;
+    border: 0.5px solid var(--rule);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .ws-step {
+    display: grid;
+    grid-template-columns: 52px 1fr auto;
+    align-items: start;
+    gap: 1rem;
+    padding: 1.1rem 1.25rem;
+    border-bottom: 0.5px solid var(--rule);
+    background: var(--warm-white);
+  }
+  .ws-step:last-child { border-bottom: none; }
+  .ws-step:nth-child(even) { background: var(--cream); }
+
+  .ws-num {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--teal-light);
+    color: var(--teal);
+    font-weight: 600;
+    font-size: 0.82rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .ws-content strong {
+    display: block;
+    font-size: 0.88rem;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .ws-content p {
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+    line-height: 1.55;
+  }
+
+  .ws-who {
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 12px;
+    white-space: nowrap;
+    margin-top: 4px;
+    flex-shrink: 0;
+  }
+  .ws-who.both { background: var(--gold-pale); color: var(--gold-dark); }
+  .ws-who.student { background: var(--teal-light); color: var(--teal); }
+  .ws-who.staff { background: var(--slate-light); color: var(--slate); }
+
+  /* ── SAFETY CHECKS ── */
+  .check-group {
+    margin-bottom: 2rem;
+  }
+  .check-group-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 0.5px solid var(--rule);
+  }
+  .check-items {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .check-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 0.9rem 1rem;
+    background: var(--warm-white);
+    border: 0.5px solid var(--rule);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .check-item:hover { background: var(--cream); }
+  .check-item.checked { background: var(--moss-light); border-color: rgba(59,107,64,0.2); }
+
+  .check-box {
+    width: 20px;
+    height: 20px;
+    border: 1.5px solid var(--rule);
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .check-item.checked .check-box {
+    background: var(--moss);
+    border-color: var(--moss);
+    color: white;
+  }
+  .check-item.checked .check-box::after { content: '✓'; font-size: 11px; }
+
+  .check-text strong {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--ink);
+    margin-bottom: 3px;
+  }
+  .check-text span {
+    font-size: 0.75rem;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+
+  .progress-bar-wrap {
+    background: var(--cream);
+    border: 0.5px solid var(--rule);
+    border-radius: 4px;
+    height: 6px;
+    margin: 1.5rem 0 0.5rem;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--moss);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+  }
+  .progress-label {
+    font-size: 0.75rem;
+    color: var(--ink-soft);
+    text-align: right;
+    margin-bottom: 1.5rem;
+  }
+
+  /* ── RECOGNITION ── */
+  .rec-tiers {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 1.5rem;
+  }
+
+  .rec-tier {
+    border-radius: 8px;
+    overflow: hidden;
+    border: 0.5px solid var(--rule);
+  }
+
+  .rec-tier-header {
+    padding: 0.75rem 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .rec-tier-body {
+    background: var(--warm-white);
+    padding: 1rem 1.1rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 8px;
+  }
+
+  .rec-item {
+    font-size: 0.78rem;
+    color: var(--ink-mid);
+    line-height: 1.5;
+    display: flex;
+    align-items: baseline;
+    gap: 7px;
+  }
+  .rec-item::before { content: '·'; font-weight: 700; flex-shrink: 0; }
+
+  /* ── DEBRIEF ── */
+  .debrief-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 1.5rem;
+  }
+  @media (max-width: 600px) {
+    .debrief-grid { grid-template-columns: 1fr; }
+    .toolkit-grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  .debrief-card {
+    background: var(--warm-white);
+    border: 0.5px solid var(--rule);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .debrief-card-header {
+    padding: 0.75rem 1rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--ink);
+    border-bottom: 0.5px solid var(--rule);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .debrief-q {
+    padding: 0.75rem 1rem;
+    border-bottom: 0.5px solid var(--rule);
+  }
+  .debrief-q:last-child { border-bottom: none; }
+  .debrief-q p {
+    font-size: 0.8rem;
+    color: var(--ink-mid);
+    line-height: 1.55;
+    margin-bottom: 6px;
+  }
+  .debrief-q textarea {
+    width: 100%;
+    resize: vertical;
+    min-height: 52px;
+    font-family: var(--sans);
+    font-size: 0.78rem;
+    color: var(--ink);
+    background: var(--cream);
+    border: 0.5px solid var(--rule);
+    border-radius: 4px;
+    padding: 6px 8px;
+    line-height: 1.5;
+  }
+  .debrief-q textarea:focus { outline: none; border-color: var(--teal-mid); }
+
+  .debrief-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 1.5rem;
+    justify-content: flex-end;
+  }
+
+  .btn {
+    font-family: var(--sans);
+    font-size: 0.82rem;
+    font-weight: 500;
+    padding: 0.55rem 1.25rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-outline {
+    background: transparent;
+    border: 0.5px solid var(--rule);
+    color: var(--ink-soft);
+  }
+  .btn-outline:hover { background: var(--cream); color: var(--ink); }
+  .btn-primary {
+    background: var(--ink);
+    border: none;
+    color: white;
+  }
+  .btn-primary:hover { background: var(--ink-mid); }
+
+  /* ── SHARED SMALL UTILS ── */
+  .pill {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    padding: 3px 8px;
+    border-radius: 12px;
+  }
+
+  .divider {
+    height: 0.5px;
+    background: var(--rule);
+    margin: 1.5rem 0;
+  }
+
+  /* ── GUIDING PRINCIPLES PAGE ── */
+  .gp-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-top: 1.5rem;
+  }
+
+  .gp-card {
+    background: var(--warm-white);
+    border: 0.5px solid var(--rule);
+    border-radius: 8px;
+    padding: 1.25rem;
+  }
+
+  .gp-num {
+    font-family: var(--serif);
+    font-size: 2rem;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .gp-title {
+    font-weight: 600;
+    font-size: 0.88rem;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+
+  .gp-desc {
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" role="navigation" aria-label="Toolkit sections">
+  <div class="nav-brand">Make Room</div>
+  <div class="nav-tab active" onclick="showSection('intro')">Overview</div>
+  <div class="nav-tab" onclick="showSection('principles')">Guiding principles</div>
+  <div class="nav-tab" onclick="showSection('invite')">1 · Invitation</div>
+  <div class="nav-tab" onclick="showSection('roles')">2 · Role menu</div>
+  <div class="nav-tab" onclick="showSection('slides')">3 · Slide workflow</div>
+  <div class="nav-tab" onclick="showSection('safety')">4 · Safety &amp; access</div>
+  <div class="nav-tab" onclick="showSection('recognition')">5 · Recognition</div>
+  <div class="nav-tab" onclick="showSection('debrief')">6 · Debrief</div>
+</nav>
+
+<!-- ══════════════════════════════════════════
+     INTRO
+════════════════════════════════════════════ -->
+<section id="intro" class="section active">
+
+  <div class="hero">
+    <div class="hero-tag">HERDSA 2026 · Beta Toolkit</div>
+    <h1>Make <em>room</em></h1>
+    <p class="hero-desc">A research-informed, practical toolkit for academics who want to extend whole-class Students as Partners (SaP) practice into the conference stage — and keep it there.</p>
+
+    <div class="flow-diagram">
+      <div class="flow-step">
+        <div class="fs-icon">I</div>
+        <div class="fs-label">Whole-class co-creation</div>
+        <div class="fs-sub">In-class SaP routines build the mindset</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="fs-icon">II</div>
+        <div class="fs-label">Transparent opt-in invite</div>
+        <div class="fs-sub">Open to current &amp; former students</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="fs-icon">III</div>
+        <div class="fs-label">Co-design the event</div>
+        <div class="fs-sub">Roles, slides, safety checks</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="fs-icon">IV</div>
+        <div class="fs-label">Co-present &amp; debrief</div>
+        <div class="fs-sub">Recognise, reflect, iterate</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="intro-cards">
+    <div class="intro-card">
+      <div class="intro-card-label">The problem</div>
+      <p>Conference stages remain staff-dominated spaces. SaP literature offers rich curriculum frameworks, but rarely extends to <em>public scholarly dissemination</em> — leaving student voice absent or tokenised at conferences.</p>
+    </div>
+    <div class="intro-card">
+      <div class="intro-card-label">The approach</div>
+      <p>Whole-class partnership routines (co-creating agendas, norms, and outcomes) build an inclusive co-creation mindset across the whole cohort — not just "super-engaged" students — then extend via transparent opt-in invitations.</p>
+    </div>
+    <div class="intro-card">
+      <div class="intro-card-label">The evidence</div>
+      <p>Enhanced confidence in professional communication, improved collaboration, and stronger scholarly identity for students (Weller et al., 2013; Giuliano et al., 2022). Richer SoTL insights for educators (Barrie, 2006).</p>
+    </div>
+    <div class="intro-card">
+      <div class="intro-card-label">How to use this</div>
+      <p>Navigate through the six components using the tabs above. Each tool is a practical, ready-to-adapt resource. Start with <em>Guiding principles</em>, then work through invitation → roles → slides → safety → recognition → debrief.</p>
+    </div>
+  </div>
+
+</section>
+
+<!-- ══════════════════════════════════════════
+     GUIDING PRINCIPLES
+════════════════════════════════════════════ -->
+<section id="principles" class="section">
+  <div class="tool-wrapper">
+    <div class="tool-header">
+      <div class="tool-num" style="color: var(--gold-light);">✦</div>
+      <div>
+        <h2>Guiding principles</h2>
+        <p>These five principles underpin all six toolkit components. They draw on Brookfield's (2017) four lenses, refined through participant feedback from classroom and conference settings across multiple institutions.</p>
+      </div>
+    </div>
+
+    <div class="gp-grid">
+      <div class="gp-card">
+        <div class="gp-num" style="color: var(--gold);">01</div>
+        <div class="gp-title">Equity before invitation</div>
+        <div class="gp-desc">Whole-class routines must build partnership norms <em>before</em> any individual invitation is extended. The invite only works when co-creation is already normalised in the learning environment.</div>
+      </div>
+      <div class="gp-card">
+        <div class="gp-num" style="color: var(--teal-mid);">02</div>
+        <div class="gp-title">Transparent opt-in</div>
+        <div class="gp-desc">Invitations are open, honest, and low-pressure. Students understand what is involved, what recognition they will receive, and that participation is genuinely optional — including former students.</div>
+      </div>
+      <div class="gp-card">
+        <div class="gp-num" style="color: var(--accent);">03</div>
+        <div class="gp-title">Shared authorship</div>
+        <div class="gp-desc">Student co-presenters are not helpers or props. They co-design content, co-own ideas, and are credited equally. The slide workflow and role menu operationalise this principle.</div>
+      </div>
+      <div class="gp-card">
+        <div class="gp-num" style="color: var(--coral);">04</div>
+        <div class="gp-title">Safety is non-negotiable</div>
+        <div class="gp-desc">Psychological and practical safety checks are built into preparation, not added as afterthoughts. Students set their own comfort boundaries; the debrief ensures ongoing safety after the event.</div>
+      </div>
+      <div class="gp-card">
+        <div class="gp-num" style="color: var(--moss);">05</div>
+        <div class="gp-title">Recognition matters</div>
+        <div class="gp-desc">Student contributions deserve formal acknowledgement beyond a thank-you. The recognition tier system ensures students gain tangible benefit — CV credit, referees, formal citations — appropriate to their contribution.</div>
+      </div>
+    </div>
+
+    <div style="margin-top: 2rem; padding: 1.25rem; background: var(--cream); border-radius: 8px; border: 0.5px solid var(--rule);">
+      <div class="intro-card-label" style="font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold-dark); margin-bottom: 0.6rem;">Methodological basis</div>
+      <p style="font-size: 0.82rem; color: var(--ink-mid); line-height: 1.65;">This toolkit was developed using <strong>Brookfield's (2017) four lenses</strong> — educator reflection, student reflection, peer/colleague feedback, and literature — refined through a <strong>fifth lens</strong>: direct participant feedback from classroom and conference deployments at the University of Sydney, MOBTS Salem, MOBTS-Oceania Auckland, Sydney Teaching Symposium, and the Global SaP Roundtable (ITLI).</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     01 INVITATION SCRIPT
+════════════════════════════════════════════ -->
+<section id="invite" class="section">
+  <div class="tool-wrapper">
+    <div class="tool-header">
+      <div class="tool-num">01</div>
+      <div>
+        <h2>Invitation script</h2>
+        <p>Transparent, opt-in language for inviting students — including <span class="tool-accent">former students after course completion</span> — to co-present. The script is a template: adapt the bracketed sections to your context, conference, and relationship with the student.</p>
+      </div>
+    </div>
+
+    <div class="script-block">
+      <div class="script-label">Email / message template</div>
+      <p>"Hi [Name], I'm presenting at [conference/event] on [date] on [topic area]. Given your work in [specific area or project], I'd love to invite you to co-present with me if that's something you'd be interested in exploring."</p>
+      <p>"This is a genuine invitation — completely optional — and we'd design the session together from the start. There's no expectation to take on more than you're comfortable with, and I'd make sure you receive [recognition: formal acknowledgement / co-authorship / CV reference / other]."</p>
+      <p>"Would you be open to a short conversation to hear more about what it might involve? No pressure either way."</p>
+      <div class="script-note">Note: Send this as a direct personal message, not to a group. Use the student's name and reference something specific to their work to signal genuine interest, not a blanket invitation.</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <h3 style="font-family: var(--serif); font-size: 1.1rem; margin-bottom: 1rem;">What makes an effective invitation?</h3>
+    <div class="principles">
+      <div class="principle">
+        <div class="p-icon">P</div>
+        <div class="p-text"><strong>Personal and specific</strong><span>Reference the student's actual contribution or interest. Generic invitations signal tokenism.</span></div>
+      </div>
+      <div class="principle">
+        <div class="p-icon">O</div>
+        <div class="p-text"><strong>Opt-in, not opt-out</strong><span>Make refusal easy and consequence-free. Power dynamics mean students may feel obliged to say yes.</span></div>
+      </div>
+      <div class="principle">
+        <div class="p-icon">R</div>
+        <div class="p-text"><strong>Recognition upfront</strong><span>State what credit or acknowledgement the student will receive before they agree. Remove ambiguity.</span></div>
+      </div>
+      <div class="principle">
+        <div class="p-icon">T</div>
+        <div class="p-text"><strong>Time and scope clear</strong><span>Be transparent about time commitment, role scope, and what co-design will involve from the outset.</span></div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <p style="font-size: 0.78rem; color: var(--ink-soft); line-height: 1.65;"><strong>Former students:</strong> Inviting alumni preserves the value of the partnership beyond the course. Use similar language, adding context about what has changed in your thinking since their graduation. Alumni often bring a unique dual perspective — student and emerging professional — that enriches conference dialogue.</p>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     02 ROLE MENU
+════════════════════════════════════════════ -->
+<section id="roles" class="section">
+  <div class="tool-wrapper">
+    <div class="tool-header">
+      <div class="tool-num">02</div>
+      <div>
+        <h2>Role menu</h2>
+        <p>A clear menu of flexible roles allows students to contribute in ways that match their skills, confidence, and career goals. Roles are not ranked — each is equally valued. Students may select a single role or combine elements across roles.</p>
+      </div>
+    </div>
+
+    <div class="role-grid">
+
+      <div class="role-card">
+        <div class="role-header" style="background: var(--gold-pale);">
+          <div class="role-badge" style="background: var(--gold-light); color: var(--gold-dark);">Presenting</div>
+          <div class="role-name">Co-presenter</div>
+        </div>
+        <div class="role-body">
+          <div class="role-desc">Takes the stage to deliver content, answer questions, and represent the research alongside the academic partner.</div>
+          <div class="role-tasks">
+            <div class="role-task">Co-designs and presents 1+ slides or section</div>
+            <div class="role-task">Participates in Q&amp;A dialogue</div>
+            <div class="role-task">Shares personal perspective or experience</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="role-card">
+        <div class="role-header" style="background: var(--teal-light);">
+          <div class="role-badge" style="background: rgba(29,107,107,0.15); color: var(--teal);">Facilitating</div>
+          <div class="role-name">Co-facilitator</div>
+        </div>
+        <div class="role-body">
+          <div class="role-desc">Facilitates discussion or audience interaction before, during, or after the presentation without necessarily presenting content.</div>
+          <div class="role-tasks">
+            <div class="role-task">Designs and runs audience activities or polls</div>
+            <div class="role-task">Manages questions from the floor</div>
+            <div class="role-task">Guides small-group breakout discussion</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="role-card">
+        <div class="role-header" style="background: var(--accent-light);">
+          <div class="role-badge" style="background: rgba(122,48,128,0.12); color: var(--accent);">Designing</div>
+          <div class="role-name">Content co-designer</div>
+        </div>
+        <div class="role-body">
+          <div class="role-desc">Works with the academic partner to co-design the content, narrative, and slides — may or may not present on the day.</div>
+          <div class="role-tasks">
+            <div class="role-task">Co-writes key sections of the presentation</div>
+            <div class="role-task">Designs visual or narrative elements</div>
+            <div class="role-task">Provides critical feedback on drafts</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="role-card">
+        <div class="role-header" style="background: var(--coral-light);">
+          <div class="role-badge" style="background: rgba(192,80,58,0.12); color: var(--coral);">Provocation</div>
+          <div class="role-name">Student provocateur</div>
+        </div>
+        <div class="role-body">
+          <div class="role-desc">Opens or closes the session with a brief student provocation — a short, distinctive statement of student perspective or challenge to the audience.</div>
+          <div class="role-tasks">
+            <div class="role-task">Prepares a 3–5 minute provocation or reflection</div>
+            <div class="role-task">Offers a student lens on the research question</div>
+            <div class="role-task">May be pre-recorded if preferred</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="role-card">
+        <div class="role-header" style="background: var(--slate-light);">
+          <div class="role-badge" style="background: rgba(58,74,107,0.12); color: var(--slate);">Research</div>
+          <div class="role-name">Research collaborator</div>
+        </div>
+        <div class="role-body">
+          <div class="role-desc">Contributes to the underlying research or scholarship being presented — co-author, data contributor, or conceptual partner.</div>
+          <div class="role-tasks">
+            <div class="role-task">Named on any outputs or publications</div>
+            <div class="role-task">Contributed to data, analysis, or writing</div>
+            <div class="role-task">Academic authorship protocols apply</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="role-card">
+        <div class="role-header" style="background: var(--moss-light);">
+          <div class="role-badge" style="background: rgba(59,107,64,0.12); color: var(--moss);">Support</div>
+          <div class="role-name">Event supporter</div>
+        </div>
+        <div class="role-body">
+          <div class="role-desc">Provides practical support before or on the day — a lighter entry point for students new to conference contexts who want to be involved without presenting.</div>
+          <div class="role-tasks">
+            <div class="role-task">Manages tech, timer, or logistics on the day</div>
+            <div class="role-task">Observes and provides feedback post-event</div>
+            <div class="role-task">Pathway to co-presenting at future events</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="margin-top: 1.5rem; padding: 1rem 1.25rem; background: var(--cream); border-radius: 8px; border: 0.5px solid var(--rule);">
+      <p style="font-size: 0.8rem; color: var(--ink-soft); line-height: 1.65;"><strong>Tip:</strong> Share this role menu with students during the invitation conversation — not after they've agreed. Seeing the full range of options allows students to self-select based on comfort and capacity, and prevents the default assumption that co-presenting means delivering the whole talk.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     03 SLIDE WORKFLOW
+════════════════════════════════════════════ -->
+<section id="slides" class="section">
+  <div class="tool-wrapper">
+    <div class="tool-header">
+      <div class="tool-num">03</div>
+      <div>
+        <h2>Shared slide workflow</h2>
+        <p>A structured process to ensure slides are genuinely co-designed — not handed to a student to "add something to." Equal authorship produces better presentations and embeds real partnership into the artefact.</p>
+      </div>
+    </div>
+
+    <div class="workflow-steps">
+
+      <div class="ws-step">
+        <div class="ws-num">1</div>
+        <div class="ws-content">
+          <strong>Separate brief conversation before opening a deck</strong>
+          <p>Before any slide is created, agree on: the key argument, who the audience is, what each person is most excited to say, and what the student's perspective uniquely contributes. 20 minutes here saves hours later.</p>
+        </div>
+        <div class="ws-who both">Both</div>
+      </div>
+
+      <div class="ws-step">
+        <div class="ws-num">2</div>
+        <div class="ws-content">
+          <strong>Draft a shared narrative outline (not slides)</strong>
+          <p>Map the session arc together — in words, not slides. A shared document with headings and 2–3 sentences per section. Each partner identifies which sections they feel ownership of.</p>
+        </div>
+        <div class="ws-who both">Both</div>
+      </div>
+
+      <div class="ws-step">
+        <div class="ws-num">3</div>
+        <div class="ws-content">
+          <strong>Student drafts their section(s) first</strong>
+          <p>Give the student the first draft of their slides, unprompted by the academic. Avoids the student reproducing the academic's framing. Even rough early drafts are better than polished slides handed down for comment.</p>
+        </div>
+        <div class="ws-who student">Student</div>
+      </div>
+
+      <div class="ws-step">
+        <div class="ws-num">4</div>
+        <div class="ws-content">
+          <strong>Academic drafts their section(s)</strong>
+          <p>Parallel drafting — each person owns their slides. At this stage, avoid reviewing each other's drafts; maintain independent voice before the merge.</p>
+        </div>
+        <div class="ws-who staff">Academic</div>
+      </div>
+
+      <div class="ws-step">
+        <div class="ws-num">5</div>
+        <div class="ws-content">
+          <strong>Joint review and integration session</strong>
+          <p>Review both sets of slides together. Look for: narrative flow, duplication, gaps, and — critically — where each voice is clearly present. Adjust for coherence without homogenising distinct perspectives.</p>
+        </div>
+        <div class="ws-who both">Both</div>
+      </div>
+
+      <div class="ws-step">
+        <div class="ws-num">6</div>
+        <div class="ws-content">
+          <strong>Practice Q&amp;A together</strong>
+          <p>Run a mock Q&amp;A session. Agree in advance on how you'll handle questions: who responds first, what to do if one person doesn't know the answer, how to support each other mid-question. This is critical for student confidence.</p>
+        </div>
+        <div class="ws-who both">Both</div>
+      </div>
+
+      <div class="ws-step">
+        <div class="ws-num">7</div>
+        <div class="ws-content">
+          <strong>Final run-through with safety check</strong>
+          <p>Before the event: confirm the student is still comfortable, no content has changed without their input, and they know the practical logistics (room, tech, timing, who to contact if something goes wrong).</p>
+        </div>
+        <div class="ws-who staff">Academic</div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     04 SAFETY & ACCESS
+════════════════════════════════════════════ -->
+<section id="safety" class="section">
+  <div class="tool-wrapper">
+    <div class="tool-header">
+      <div class="tool-num">04</div>
+      <div>
+        <h2>Safety &amp; accessibility checks</h2>
+        <p>These prompts ensure psychological safety and accessibility for student co-presenters <em>before and during</em> events. Click each item to mark it complete. Use the checklist in your preparation meeting with the student.</p>
+      </div>
+    </div>
+
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-fill" style="width: 0%"></div></div>
+    <div class="progress-label" id="progress-label">0 of 12 checks completed</div>
+
+    <div class="check-group">
+      <div class="check-group-label">Before inviting — foundations</div>
+      <div class="check-items" id="checks-a">
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text"><strong>Whole-class partnership already normalised in the unit</strong><span>Partnership norms should be established through in-class practices before any invitation to a public event is made.</span></div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text"><strong>Recognition confirmed and documented before agreement</strong><span>Students know what they will receive (CV reference, co-authorship, acknowledgement, honorarium, or other) before they say yes.</span></div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text"><strong>Power dynamics explicitly acknowledged with the student</strong><span>Have you named the fact that you are the educator and they are the student — and that this genuinely does not affect their grade, standing, or relationship with you?</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="check-group">
+      <div class="check-group-label">During preparation — content and comfort</div>
+      <div class="check-items" id="checks-b">
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text"><strong>Student has reviewed all content to be presented</strong><span>No surprises on the day. The student has seen and approved any content that relates to them, their work, or their experiences.</span></div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text"><strong>Student's comfort boundary on Q&amp;A agreed</strong><span>What types of questions is the student comfortable answering? What will you redirect to yourself? Agreed in advance — not improvised under pressure.</span></div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text"><strong>Student knows they can pause, pass, or step back at any time</strong><span>A clear, rehearsed "exit ramp" — if they feel uncomfortable, they have a dignified way to pause or hand back to you without explanation.</span></div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text"><strong>Accessibility needs checked and accommodated</strong><span>Have you asked about and arranged for any accessibility requirements — physical, sensory, cognitive — for the event venue and format?</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="check-group">
+      <div class="check-group-label">On the day — practical safety</div>
+      <div class="check-items" id="checks-c">
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text"><strong>Student has a named contact for day-of logistics issues</strong><span>A phone number to call if they're lost, running late, or something changes — not just your email.</span></div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text"><strong>Introductions planned: student will be introduced by you</strong><span>You introduce the student to the audience, with their preferred name and relevant background. They don't have to justify their presence at the start.</span></div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text"><strong>Student included in any post-event social or networking</strong><span>Conference networking is a major benefit. Ensure the student is actively included and introduced — not left standing at the edge of conversations.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="check-group">
+      <div class="check-group-label">After the event</div>
+      <div class="check-items" id="checks-d">
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text"><strong>Student debriefed within one week</strong><span>Don't let the experience pass without structured reflection. Use the debrief template (section 6) promptly while the event is fresh.</span></div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text"><strong>Recognition actioned — not just promised</strong><span>Whatever recognition was agreed has been delivered: reference written, acknowledgement added to slides/publication, or formal record updated.</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     05 RECOGNITION
+════════════════════════════════════════════ -->
+<section id="recognition" class="section">
+  <div class="tool-wrapper">
+    <div class="tool-header">
+      <div class="tool-num">05</div>
+      <div>
+        <h2>Recognition guidance</h2>
+        <p>Student contributions deserve formal, tangible acknowledgement — not just gratitude. This tier system matches recognition to the nature and depth of the student's contribution.</p>
+      </div>
+    </div>
+
+    <div class="rec-tiers">
+
+      <div class="rec-tier">
+        <div class="rec-tier-header" style="background: var(--gold-pale);">
+          <div class="pill" style="background: var(--gold-light); color: var(--gold-dark);">Tier 1</div>
+          <strong style="font-size: 0.88rem; color: var(--ink);">Acknowledgement</strong>
+          <span style="font-size: 0.78rem; color: var(--ink-soft); margin-left: auto;">Minimum — applies to all contributions</span>
+        </div>
+        <div class="rec-tier-body">
+          <div class="rec-item">Named in presentation slides</div>
+          <div class="rec-item">Named in any published abstract or proceedings</div>
+          <div class="rec-item">Verbal acknowledgement to audience</div>
+          <div class="rec-item">LinkedIn recommendation / endorsement offered</div>
+          <div class="rec-item">Written thank-you and debrief from academic partner</div>
+        </div>
+      </div>
+
+      <div class="rec-tier">
+        <div class="rec-tier-header" style="background: var(--teal-light);">
+          <div class="pill" style="background: rgba(29,107,107,0.2); color: var(--teal);">Tier 2</div>
+          <strong style="font-size: 0.88rem; color: var(--ink);">Professional credential</strong>
+          <span style="font-size: 0.78rem; color: var(--ink-soft); margin-left: auto;">For active presenting or facilitating roles</span>
+        </div>
+        <div class="rec-tier-body">
+          <div class="rec-item">Formal academic reference letter</div>
+          <div class="rec-item">Letter confirming role for CV / scholarship applications</div>
+          <div class="rec-item">Micro-credential or institutional record (where available)</div>
+          <div class="rec-item">Named co-presenter in conference program</div>
+          <div class="rec-item">Invitation to future events as named partner</div>
+        </div>
+      </div>
+
+      <div class="rec-tier">
+        <div class="rec-tier-header" style="background: var(--slate-light);">
+          <div class="pill" style="background: rgba(58,74,107,0.15); color: var(--slate);">Tier 3</div>
+          <strong style="font-size: 0.88rem; color: var(--ink);">Research co-authorship</strong>
+          <span style="font-size: 0.78rem; color: var(--ink-soft); margin-left: auto;">Where substantial intellectual contribution has been made</span>
+        </div>
+        <div class="rec-tier-body">
+          <div class="rec-item">Named co-author on any written output or publication</div>
+          <div class="rec-item">CRediT author contribution statement</div>
+          <div class="rec-item">Formal co-investigator or research partner status</div>
+          <div class="rec-item">Paid or stipended partnership (where institutional mechanisms exist)</div>
+          <div class="rec-item">Pathway into Honours, research assistant, or SoTL co-investigator role</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="divider"></div>
+
+    <h3 style="font-family: var(--serif); font-size: 1.1rem; margin-bottom: 1rem;">Widening access to recognition</h3>
+    <p style="font-size: 0.85rem; color: var(--ink-mid); line-height: 1.7; margin-bottom: 1rem;">Current SaP literature notes that recognition too often defaults to informal thanks — which disadvantages students who most need tangible credentials (first-in-family students, international students, those without existing professional networks). Making Tier 1 recognition the minimum, non-negotiable floor ensures partnership is genuinely beneficial to all students who participate.</p>
+    <p style="font-size: 0.85rem; color: var(--ink-mid); line-height: 1.7;">Discuss and agree on recognition tier <em>before</em> the student commits. Do not adjust recognition downwards after the fact. If institutional mechanisms for higher tiers don't exist at your institution, name that gap to the student honestly and advocate to create them.</p>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     06 DEBRIEF
+════════════════════════════════════════════ -->
+<section id="debrief" class="section">
+  <div class="tool-wrapper">
+    <div class="tool-header">
+      <div class="tool-num">06</div>
+      <div>
+        <h2>Debrief template</h2>
+        <p>A structured post-event reflection for both partners. Debrief within one week of the event. Responses can be used as data for Brookfield's fourth and fifth lenses. Type your notes here and print or copy to save.</p>
+      </div>
+    </div>
+
+    <div class="debrief-grid">
+
+      <div class="debrief-card">
+        <div class="debrief-card-header" style="background: var(--gold-pale); color: var(--gold-dark);">
+          Student partner reflection
+        </div>
+        <div class="debrief-q">
+          <p>What felt most comfortable about the co-presenting experience?</p>
+          <textarea placeholder="Write here…"></textarea>
+        </div>
+        <div class="debrief-q">
+          <p>What felt most challenging or uncomfortable — and why?</p>
+          <textarea placeholder="Write here…"></textarea>
+        </div>
+        <div class="debrief-q">
+          <p>What graduate qualities or skills did you develop or demonstrate?</p>
+          <textarea placeholder="Write here…"></textarea>
+        </div>
+        <div class="debrief-q">
+          <p>What would you change if co-presenting again?</p>
+          <textarea placeholder="Write here…"></textarea>
+        </div>
+        <div class="debrief-q">
+          <p>Was the recognition you received appropriate and meaningful?</p>
+          <textarea placeholder="Write here…"></textarea>
+        </div>
+      </div>
+
+      <div class="debrief-card">
+        <div class="debrief-card-header" style="background: var(--teal-light); color: var(--teal);">
+          Academic partner reflection
+        </div>
+        <div class="debrief-q">
+          <p>What did the student's perspective contribute that you couldn't have offered alone?</p>
+          <textarea placeholder="Write here…"></textarea>
+        </div>
+        <div class="debrief-q">
+          <p>Where did the preparation process work well — or break down?</p>
+          <textarea placeholder="Write here…"></textarea>
+        </div>
+        <div class="debrief-q">
+          <p>What audience reactions or questions were shaped by the student's presence?</p>
+          <textarea placeholder="Write here…"></textarea>
+        </div>
+        <div class="debrief-q">
+          <p>What will you do differently in the next invitation or co-design process?</p>
+          <textarea placeholder="Write here…"></textarea>
+        </div>
+        <div class="debrief-q">
+          <p>What SoTL or teaching insights did this experience generate for you?</p>
+          <textarea placeholder="Write here…"></textarea>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="debrief-grid" style="margin-top: 16px;">
+      <div class="debrief-card">
+        <div class="debrief-card-header" style="background: var(--accent-light); color: var(--accent);">
+          Joint reflection (both partners)
+        </div>
+        <div class="debrief-q">
+          <p>What worked well in how we divided and shared responsibility?</p>
+          <textarea placeholder="Write here…"></textarea>
+        </div>
+        <div class="debrief-q">
+          <p>Did the power dynamic show up in ways we hadn't anticipated?</p>
+          <textarea placeholder="Write here…"></textarea>
+        </div>
+        <div class="debrief-q">
+          <p>Would we do this again — and what would need to be different?</p>
+          <textarea placeholder="Write here…"></textarea>
+        </div>
+      </div>
+
+      <div class="debrief-card" style="display: flex; flex-direction: column;">
+        <div class="debrief-card-header" style="background: var(--moss-light); color: var(--moss);">
+          Next steps
+        </div>
+        <div class="debrief-q" style="flex: 1;">
+          <p style="margin-bottom: 12px;">Based on this debrief, what are your commitments for the next co-presenting opportunity?</p>
+          <textarea style="min-height: 120px;" placeholder="e.g. Invite earlier, share the role menu before agreeing, check recognition wording…"></textarea>
+        </div>
+        <div class="debrief-q">
+          <p>Who else in your department or network should you share this experience with?</p>
+          <textarea placeholder="Write here…"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="debrief-actions">
+      <button class="btn btn-outline" onclick="window.print()">Print / save as PDF</button>
+      <button class="btn btn-primary" onclick="copyResponses()">Copy all responses</button>
+    </div>
+
+    <div style="margin-top: 2rem; padding: 1rem 1.25rem; background: var(--cream); border-radius: 8px; border: 0.5px solid var(--rule);">
+      <p style="font-size: 0.78rem; color: var(--ink-soft); line-height: 1.65;"><strong>Data use note:</strong> These reflections can contribute to Brookfield's (2017) first and second lenses (educator and student reflection) and the toolkit's fifth lens (participant feedback). With informed consent, debrief notes may be used as data for scholarship of teaching and learning (SoTL) enquiry. Always comply with your institutional ethics requirements — including HREC approval — before collecting, retaining, or publishing debrief responses.</p>
+    </div>
+
+  </div>
+</section>
+
+<script>
+  function showSection(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    const tabs = document.querySelectorAll('.nav-tab');
+    const map = { intro:0, principles:1, invite:2, roles:3, slides:4, safety:5, recognition:6, debrief:7 };
+    tabs[map[id]].classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  const TOTAL_CHECKS = 12;
+  function toggleCheck(el) {
+    el.classList.toggle('checked');
+    updateProgress();
+  }
+  function updateProgress() {
+    const checked = document.querySelectorAll('.check-item.checked').length;
+    const pct = Math.round((checked / TOTAL_CHECKS) * 100);
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('progress-label').textContent = checked + ' of ' + TOTAL_CHECKS + ' checks completed';
+  }
+
+  function copyResponses() {
+    const areas = document.querySelectorAll('#debrief textarea');
+    let text = 'Make Room Debrief — ' + new Date().toLocaleDateString() + '\n\n';
+    areas.forEach((ta, i) => {
+      const q = ta.previousElementSibling;
+      if (q && ta.value.trim()) {
+        text += 'Q: ' + q.textContent.trim() + '\nA: ' + ta.value.trim() + '\n\n';
+      }
+    });
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(() => alert('Responses copied to clipboard.'));
+    }
+  }
+</script>
+
+</body>
+</html>
